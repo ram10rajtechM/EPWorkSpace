@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<definitions xmlns="http://www.elasticpath.com/schema/rest/0.5">
+    <family>
+        <name>charity</name>
+        <description>Family for charity</description>
+
+        <uri-part>
+            <name>charity-id</name>
+            <description>Identifier for specific charity</description>
+            <string/>
+        </uri-part>
+
+        <entity>
+            <name>charity</name>
+            <description>Purchase is for charity confirmation</description>
+            <property>
+                <name>amount</name>
+                <description>The message to display</description>
+                <string/>
+            </property>
+            <property>
+                <name>message</name>
+                <description>The message to display</description>
+                <string/>
+            </property>
+            <property>
+                <name>accepted</name>
+                <description>Whether the purchase is for a charity</description>
+                <boolean/>
+            </property>
+
+            <entity-type>charity.charity</entity-type>
+        </entity>
+
+        <resource>
+            <name>charity-form</name>
+            <description>A charity resource.</description>
+            <uri>/{base.family}/{base.scope}/{charity-id}</uri>
+            <entity>charity</entity>
+        </resource>
+
+        <relationship>
+            <name>order-to-charity</name>
+            <description>Link from orders resource to the charity resource.</description>
+            <rel>charity</rel>
+            <from>orders.order</from>
+            <to>charity-form</to>
+        </relationship>
+
+        <advisor>
+            <name>order-charity</name>
+            <description>Advisor for the charity</description>
+            <linked-to>charity-form</linked-to>
+            <advises>orders.order</advises>
+        </advisor>
+
+        <advisor>
+            <name>purchase-form-charity</name>
+            <description>Advisor on the purchase form for missing charity on the order</description>
+            <linked-to>charity-form</linked-to>
+            <blocks>purchases.create-purchase-form</blocks>
+        </advisor>
+
+    </family>
+</definitions>

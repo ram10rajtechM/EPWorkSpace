@@ -1,0 +1,53 @@
+# Common rules for all environments
+# ---------------------------------
+
+# Ignored files #
+*.class
+*.orig
+*.~
+*.bak
+*.iml
+.classpath
+.project
+.springBeans
+.checkstyle
+.metadata
+.pmd
+.pmdruleset
+.ruleset
+rebel.xml
+pom.xml.versionsBackup
+mem
+.DS_Store
+
+# Ignored directories #
+.idea/
+.settings/
+target/
+
+#==============================
+#Custom ingoring files
+#==============================
+1
+bill-of-materials/*
+commerce-data/*
+commerce-engine/*
+commerce-manager/*
+cortex-resources/*
+devops/*
+health-monitoring/*
+importexport/*
+extensions/activemq-broker/*
+extensions/assets/*
+extensions/batch/*
+extensions/data-population/*
+extensions/importexport/*
+extensions/integration/*
+extensions/maven/*
+extensions/packager/*
+extensions/search/*
+extensions/system-tests/*
+extensions/sync/*
+extensions/sync/*
+
+.sql

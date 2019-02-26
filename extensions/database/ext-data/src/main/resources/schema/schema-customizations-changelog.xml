@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+    logicalFilePath="com.elasticpath.extensions/db/ext-database/schema-customizations-changelog.xml">
+
+	<!-- Important:
+	- Table names cannot exceed 30 characters (Oracle limitation)
+	- Column names cannot exceed 30 characters (Oracle limitation)
+	- Index names cannot exceed 18 characters (DB2 limitation)
+
+	 Important:
+	- Using <preCondition> ? read: http://forum.liquibase.org/topic/unexpected-behaviour-of-preconditions-with-updatesql
+	- Using <preCondition> ? Consider adding onUpdateSql="TEST", but understand how it plays with updateSQL!
+	-->
+
+	<!--
+	<changeSet id="1" author="example@example.com">
+		<createTable tableName="TEXAMPLE">
+			<column name="uidpk" type="int">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+			<column name="guid" type="varchar(64)"/>
+			<column name="firstname" type="varchar(255)"/>
+			<column name="lastname" type="varchar(255)"/>
+			<column name="username" type="varchar(255)">
+				<constraints unique="true" nullable="false"/>
+			</column>
+			<column name="testid" type="int" />
+		</createTable>
+	</changeSet>
+	-->
+
+	<!-- Start Adding charity related columns and new table-->
+	<changeSet id="charity_tables" author="training@elasticpath.com">
+		<addColumn tableName="TCARTORDER">
+			<column name="CHARITY" type="VARCHAR(20)"/>
+		</addColumn>
+
+		<update tableName="TCARTORDER">
+			<column name="CHARITY" value="CHARITY"/>
+		</update>
+
+		<createTable tableName="TCARTORDERCHARITY">
+			<column name="UIDPK" type="BIGINT">
+				<constraints nullable="false" primaryKey="true" />
+			</column>
+			<column name="CARTORDER_UID" type="BIGINT">
+				<constraints nullable="false" />
+			</column>
+			<column name="CHARITY" type="varchar(64)">
+				<constraints nullable="true" />
+			</column>
+
+			<column name="AMOUNT" type="varchar(255)">
+				<constraints nullable="true" />
+			</column>
+			<column name="ACCEPTED" type="INTEGER"/>
+		</createTable>
+
+		<createIndex tableName="TCARTORDERCHARITY" indexName="I_TCARTORDERCHARITY_CARTORDER_UID">
+			<column name="CARTORDER_UID" />
+		</createIndex>
+
+		<addForeignKeyConstraint constraintName="FK_TCARTORDERCHARITY_CARTORDER" baseTableName="TCARTORDERCHARITY" baseColumnNames="CARTORDER_UID"
+								 referencedTableName="TCARTORDER" referencedColumnNames="UIDPK" />
+
+		<insert tableName="JPA_GENERATED_KEYS">
+			<column name="ID" value="TCARTORDERCHARITY" />
+			<column name="LAST_VALUE" valueNumeric="200000" />
+		</insert>
+		<createTable tableName="TCHARITY">
+			<column name="uidpk" type="int">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+			<column name="guid" type="varchar(64)"/>
+			<column name="charity" type="varchar(255)"/>
+		</createTable>
+		<insert tableName="TCHARITY">
+			<column name="uidpk" type="int" value="100">
+			</column>
+			<column name="guid" type="varchar(64)" value="100"/>
+			<column name="charity" type="varchar(255)" value="Heart Foundation"/>
+		</insert>
+		<insert tableName="TCHARITY">
+			<column name="uidpk" type="int" value="200">
+			</column>
+			<column name="guid" type="varchar(64)" value="200"/>
+			<column name="charity" type="varchar(255)" value="Eye Foundation"/>
+		</insert>
+		<insert tableName="JPA_GENERATED_KEYS">
+			<column name="ID" value="TCHARITY" />
+			<column name="LAST_VALUE" valueNumeric="200000" />
+		</insert>
+	</changeSet>
+
+	<!-- End of Charity related columns new table -->
+</databaseChangeLog>
