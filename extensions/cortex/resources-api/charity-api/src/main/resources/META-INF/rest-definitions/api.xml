@@ -47,6 +47,25 @@
             <to>charity-form</to>
         </relationship>
 
+        <relationship>
+            <name>charity-to-purchase</name>
+            <description>
+                <![CDATA[Retrieve the charity amount applied to a [purchase][purchases].[purchases]: #purchases
+				]]>
+            </description>
+            <rel>purchase</rel>
+            <rev>charity</rev>
+            <from>charity-for-purchase</from>
+            <to>purchases.purchase</to>
+        </relationship>
+
+        <resource>
+            <name>charity-for-purchase</name>
+            <description><![CDATA[A charity resource that identifies charity amount applied to a purchase.]]></description>
+            <uri>{base.family}/{purchases.purchase}</uri>
+            <entity>charity</entity>
+        </resource>
+
         <advisor>
             <name>order-charity</name>
             <description>Advisor for the charity</description>
