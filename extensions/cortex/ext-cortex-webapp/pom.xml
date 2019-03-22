@@ -62,6 +62,18 @@
 			<version>${project.version}</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.elasticpath.extensions.rest.definitions</groupId>
+			<artifactId>accessories-api</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.elasticpath.extensions.rest.resource</groupId>
+			<artifactId>accessories-prototype</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>
+		</dependency>
 
 
 		<dependency>

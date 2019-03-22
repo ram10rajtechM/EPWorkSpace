@@ -19,6 +19,7 @@
 	<modules>
 		<module>example-api</module>
 		<module>charity-api</module>
+		<module>accessories-api</module>
 	</modules>
 
 	<build>
