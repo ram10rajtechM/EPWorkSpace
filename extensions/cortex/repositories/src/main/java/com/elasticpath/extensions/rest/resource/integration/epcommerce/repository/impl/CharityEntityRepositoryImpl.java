@@ -35,8 +35,12 @@ import java.util.Map;
 public class CharityEntityRepositoryImpl<E extends CharityEntity, I extends CharityFormIdentifier>
         implements Repository<CharityEntity, CharityFormIdentifier> {
     private static final String ACCEPTED_CHARITY_ATTRIBUTE_KEY = "CP_BE_NOTIFIED";
+
     private static final String CHARITY_KEY = "Heart Foundation";
     private static final String CHARITY_PERCENTAGE = "COMMERCE/SYSTEM/CHARITY/Percentage";
+
+
+
     @Reference
     private CartOrderRepository cartOrderRepository;
 
@@ -48,11 +52,11 @@ public class CharityEntityRepositoryImpl<E extends CharityEntity, I extends Char
     @Reference
     private SettingsReader settingsReader;
 
-
     /*start*/
 
     @Override
     public Completable update(final CharityEntity entity, final CharityFormIdentifier identifier) {
+        LOG.info("test messagfe");
         return getOrder(identifier)
                 .flatMap(order -> updateOrder(entity, order))
                 .toCompletable();
@@ -71,14 +75,6 @@ public class CharityEntityRepositoryImpl<E extends CharityEntity, I extends Char
         }
 
         charityFlag.setAccepted(entity.isAccepted());
-
-
-        //String orderId = identifier.getCharityId().getValue();
-        //String storeId = identifier.getScope().getValue();
-        // BigDecimal CharityAmount = getCharityAmountCal(totalsCalculator.calculateSubTotalForCartOrderSingle(storeId,orderId).blockingGet().getAmount());
-        LOG.info("My amount is calculates : " + entity.getAmount());
-        LOG.info("setAccepted : " + entity.isAccepted());
-        LOG.info("CHARITY_KEY" + CHARITY_KEY);
         charityFlag.setAmount(entity.getAmount());
         charityFlag.setAccepted(entity.isAccepted());
         cartOrderCharityFlags.put(CHARITY_KEY, charityFlag);
@@ -89,7 +85,6 @@ public class CharityEntityRepositoryImpl<E extends CharityEntity, I extends Char
     /* calcualte the Charity amount */
     private BigDecimal getCharityAmountCal(final BigDecimal total) {
         String settingValue = settingsReader.getSettingValue(CHARITY_PERCENTAGE).getValue();
-        LOG.info("Configuration value" + settingValue);
         BigDecimal multiplayedCharity = total.multiply(new BigDecimal(settingValue));
         BigDecimal dividedCharity = multiplayedCharity.divide(new BigDecimal(100));
         return dividedCharity;
@@ -99,14 +94,14 @@ public class CharityEntityRepositoryImpl<E extends CharityEntity, I extends Char
     @CacheResult
     public Single<CharityEntity> findOne(final CharityFormIdentifier identifier) {
         String orderId = identifier.getCharityId().getValue();
-        LOG.info("Cart id + : " + orderId);
         String storeId = identifier.getScope().getValue();
         BigDecimal CharityAmount = getCharityAmountCal(totalsCalculator.calculateSubTotalForCartOrderSingle(storeId, orderId).blockingGet().getAmount());
-        return Single.just(CharityEntity.builder()
-                .withAccepted(false)
-                .withMessage("Do you confirm that this purchase is for charity?")
-                .withAmount(CharityAmount.toString())
-                .build());
+        return getOrder(identifier).map(this::isCartOrderCharityAccepted)
+                .map(isAccepted -> CharityEntity.builder()
+                        .withAccepted(isAccepted)
+                        .withAmount(CharityAmount.toString())
+                        .withMessage("Do you confirm that this purchase is for charity?")
+                        .build());
     }
 
     private boolean isCartOrderCharityAccepted(final ExtCartOrder cartOrder) {
@@ -115,8 +110,6 @@ public class CharityEntityRepositoryImpl<E extends CharityEntity, I extends Char
     }
 
     private Single<ExtCartOrder> getOrder(final CharityFormIdentifier identifier) {
-        LOG.info("Ext Cart Object : "+ cartOrderRepository.findByGuidAsSingle(identifier.getScope().getValue(),
-                identifier.getCharityId().getValue()).blockingGet());
         ExtCartOrder cartOrder = (ExtCartOrder) cartOrderRepository.findByGuidAsSingle(identifier.getScope().getValue(),
                 identifier.getCharityId().getValue()).blockingGet();
         return Single.just(cartOrder);

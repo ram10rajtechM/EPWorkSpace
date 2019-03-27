@@ -15,6 +15,7 @@
 		<class>com.elasticpath.extensions.domain.charity.impl.CharityFlagImpl</class>
 		<class>com.elasticpath.extensions.domain.charity.impl.CartOrderCharityFlagImpl</class>
 		<class>com.elasticpath.extensions.domain.cartorder.impl.ExtCartOrderImpl</class>
+		<!--<class>com.elasticpath.extensions.domain.shoppingcart.impl.ExtShoppingCartImpl</class>-->
 		<!-- All persistent classes should be listed above and enhanced at runtime.
 		     The following directive supresses runtime enhancement classpath scanning which does not work in an OSGi environment. -->
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
